@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -19,19 +20,20 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Sidebar() {
   const { activeRole, setActiveRole, theme, toggleTheme, user, logout } = useAuth();
+  const location = useLocation();
 
-  // Navigation items with role permissions
+  // Navigation items with routes and role permissions
   const navigation = [
-    { name: "Dashboard", icon: LayoutDashboard, active: true },
-    { name: "Faculty", icon: Users, roles: ["Head of Department", "Dept. Coordinator"] },
-    { name: "Announcements", icon: Megaphone },
-    { name: "Meetings", icon: Calendar },
-    { name: "Documents", icon: FileText },
-    { name: "Tasks", icon: CheckSquare },
-    { name: "AI Knowledge", icon: Sparkles },
-    { name: "Reports", icon: BarChart3, roles: ["Head of Department"] },
-    { name: "Notifications", icon: Bell },
-    { name: "Settings", icon: Settings },
+    { name: "Dashboard", icon: LayoutDashboard, path: "/" },
+    { name: "Faculty", icon: Users, path: "/faculty", roles: ["Head of Department", "Dept. Coordinator"] },
+    { name: "Announcements", icon: Megaphone, path: "/announcements" },
+    { name: "Meetings", icon: Calendar, path: "/meetings" },
+    { name: "Documents", icon: FileText, path: "/documents" },
+    { name: "Tasks", icon: CheckSquare, path: "/tasks" },
+    { name: "AI Knowledge", icon: Sparkles, path: "/ai-knowledge" },
+    { name: "Reports", icon: BarChart3, path: "/reports", roles: ["Head of Department"] },
+    { name: "Notifications", icon: Bell, path: "/notifications" },
+    { name: "Settings", icon: Settings, path: "/settings" },
   ];
 
   // Filter menu items based on the active role
@@ -86,19 +88,21 @@ export default function Sidebar() {
         <nav className="space-y-1">
           {filteredNav.map((item) => {
             const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+
             return (
-              <a
+              <Link
                 key={item.name}
-                href="#"
+                to={item.path}
                 className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                  item.active
+                  isActive
                     ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20 font-semibold"
                     : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-100"
                 }`}
               >
                 <Icon className="w-4 h-4" />
                 {item.name}
-              </a>
+              </Link>
             );
           })}
         </nav>
@@ -108,11 +112,11 @@ export default function Sidebar() {
       <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold flex items-center justify-center text-xs">
-            {user.avatar}
+            {user?.avatar || "U"}
           </div>
           <div className="truncate max-w-[90px]">
             <p className="text-xs font-semibold truncate text-slate-800 dark:text-slate-200">
-              {user.name.split(" ")[0]}
+              {user?.name ? user.name.split(" ")[0] : "User"}
             </p>
             <p className="text-[10px] text-slate-400 truncate">{activeRole}</p>
           </div>
