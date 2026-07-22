@@ -1,0 +1,149 @@
+import React from "react";
+import {
+  LayoutDashboard,
+  Users,
+  Megaphone,
+  Calendar,
+  FileText,
+  CheckSquare,
+  Sparkles,
+  BarChart3,
+  Bell,
+  Settings,
+  Sun,
+  Moon,
+  ChevronDown,
+  LogOut,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+
+export default function Sidebar() {
+  const { activeRole, setActiveRole, theme, toggleTheme, user, logout } = useAuth();
+
+  // Navigation items with role permissions
+  const navigation = [
+    { name: "Dashboard", icon: LayoutDashboard, active: true },
+    { name: "Faculty", icon: Users, roles: ["Head of Department", "Dept. Coordinator"] },
+    { name: "Announcements", icon: Megaphone },
+    { name: "Meetings", icon: Calendar },
+    { name: "Documents", icon: FileText },
+    { name: "Tasks", icon: CheckSquare },
+    { name: "AI Knowledge", icon: Sparkles },
+    { name: "Reports", icon: BarChart3, roles: ["Head of Department"] },
+    { name: "Notifications", icon: Bell },
+    { name: "Settings", icon: Settings },
+  ];
+
+  // Filter menu items based on the active role
+  const filteredNav = navigation.filter(
+    (item) => !item.roles || item.roles.includes(activeRole)
+  );
+
+  return (
+    <aside className="w-64 border-r flex flex-col justify-between h-screen sticky top-0 transition-colors duration-200 bg-white border-slate-200 text-slate-700 dark:bg-slate-900/95 dark:border-slate-800 dark:text-slate-200 backdrop-blur-md">
+      <div className="p-5">
+        {/* Brand Logo & Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
+            W
+          </div>
+          <div>
+            <h1 className="font-extrabold text-lg tracking-tight text-slate-900 dark:text-white">
+              WorkHub <span className="text-indigo-500">AI</span>
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              Enterprise Suite
+            </p>
+          </div>
+        </div>
+
+        {/* Dynamic Role Switcher Dropdown */}
+        <div className="mb-6 p-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50">
+          <label className="block text-[10px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500 mb-1">
+            Active Role
+          </label>
+          <div className="relative">
+            <select
+              value={activeRole}
+              onChange={(e) => setActiveRole(e.target.value)}
+              className="w-full bg-transparent font-semibold text-xs text-slate-800 dark:text-slate-100 focus:outline-none appearance-none pr-6 cursor-pointer"
+            >
+              <option value="Head of Department" className="dark:bg-slate-900">
+                Head of Department
+              </option>
+              <option value="Dept. Coordinator" className="dark:bg-slate-900">
+                Dept. Coordinator
+              </option>
+              <option value="Faculty Member" className="dark:bg-slate-900">
+                Faculty Member
+              </option>
+            </select>
+            <ChevronDown className="w-4 h-4 absolute right-0 top-0.5 text-slate-400 pointer-events-none" />
+          </div>
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="space-y-1">
+          {filteredNav.map((item) => {
+            const Icon = item.icon;
+            return (
+              <a
+                key={item.name}
+                href="#"
+                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+                  item.active
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20 font-semibold"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-100"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {item.name}
+              </a>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Footer Controls: User Profile + Theme & Logout Actions */}
+      <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold flex items-center justify-center text-xs">
+            {user.avatar}
+          </div>
+          <div className="truncate max-w-[90px]">
+            <p className="text-xs font-semibold truncate text-slate-800 dark:text-slate-200">
+              {user.name.split(" ")[0]}
+            </p>
+            <p className="text-[10px] text-slate-400 truncate">{activeRole}</p>
+          </div>
+        </div>
+
+        {/* Controls: Theme Toggle + Logout Button */}
+        <div className="flex items-center gap-1">
+          {/* Light / Dark Mode Toggle */}
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle Theme"
+            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-all border border-slate-200 dark:border-slate-700/50"
+          >
+            {theme === "dark" ? (
+              <Sun className="w-4 h-4 text-amber-400" />
+            ) : (
+              <Moon className="w-4 h-4 text-indigo-600" />
+            )}
+          </button>
+
+          {/* Logout Action Button */}
+          <button
+            onClick={logout}
+            title="Sign Out"
+            aria-label="Sign Out"
+            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-all border border-slate-200 dark:border-slate-700/50"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+}
