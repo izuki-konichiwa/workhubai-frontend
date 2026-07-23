@@ -14,8 +14,23 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Triggers authentication in AuthContext
-    login(role, email);
+
+    // Derive name: Use typed fullName for SignUp, or extract formatted name from email for SignIn
+    let derivedName = fullName.trim();
+    if (!derivedName && email) {
+      const emailPrefix = email.split("@")[0];
+      derivedName = emailPrefix
+        .split(".")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
+    }
+
+    // Pass structured user object directly to AuthContext
+    login({
+      name: derivedName || "User",
+      email: email,
+      role: role,
+    });
   };
 
   return (
@@ -98,6 +113,7 @@ export default function Login() {
           {/* Tab switch between Sign In and Sign Up */}
           <div className="p-1 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 flex text-xs font-semibold">
             <button
+              type="button"
               onClick={() => setIsSignUp(false)}
               className={`flex-1 py-2 rounded-lg transition-all ${
                 !isSignUp
@@ -108,6 +124,7 @@ export default function Login() {
               Sign In
             </button>
             <button
+              type="button"
               onClick={() => setIsSignUp(true)}
               className={`flex-1 py-2 rounded-lg transition-all ${
                 isSignUp

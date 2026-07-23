@@ -3,14 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
-  Megaphone,
-  Calendar,
-  FileText,
   CheckSquare,
   Sparkles,
-  BarChart3,
-  Bell,
-  Settings,
   Sun,
   Moon,
   ChevronDown,
@@ -22,18 +16,12 @@ export default function Sidebar() {
   const { activeRole, setActiveRole, theme, toggleTheme, user, logout } = useAuth();
   const location = useLocation();
 
-  // Navigation items with routes and role permissions
+  // Streamlined v1/v2 navigation items
   const navigation = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/" },
     { name: "Faculty", icon: Users, path: "/faculty", roles: ["Head of Department", "Dept. Coordinator"] },
-    { name: "Announcements", icon: Megaphone, path: "/announcements" },
-    { name: "Meetings", icon: Calendar, path: "/meetings" },
-    { name: "Documents", icon: FileText, path: "/documents" },
     { name: "Tasks", icon: CheckSquare, path: "/tasks" },
     { name: "AI Knowledge", icon: Sparkles, path: "/ai-knowledge" },
-    { name: "Reports", icon: BarChart3, path: "/reports", roles: ["Head of Department"] },
-    { name: "Notifications", icon: Bell, path: "/notifications" },
-    { name: "Settings", icon: Settings, path: "/settings" },
   ];
 
   // Filter menu items based on the active role

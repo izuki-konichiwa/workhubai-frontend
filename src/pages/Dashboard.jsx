@@ -1,128 +1,225 @@
 import React from "react";
-import { Users, CheckSquare, Clock, Sparkles, TrendingUp, AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import {
+  Users,
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  Calendar,
+  Megaphone,
+  ArrowRight,
+  Plus,
+  Video,
+  Pin,
+} from "lucide-react";
 
 export default function Dashboard() {
-  const { activeRole, faculty, tasks, toggleTaskStatus } = useAuth();
+  const { user, activeRole, tasks, faculty } = useAuth();
 
-  // Dynamic calculations based on global state
-  const totalFacultyCount = faculty.length;
-  const activeFacultyCount = faculty.filter((f) => f.status === "Active").length;
-  
+  // Filter tasks breakdown
   const pendingTasks = tasks.filter((t) => t.status !== "Completed");
   const completedTasks = tasks.filter((t) => t.status === "Completed");
-  const highPriorityPending = pendingTasks.filter((t) => t.priority === "High").length;
+
+  // Sample Consolidated Announcements Data
+  const announcements = [
+    {
+      id: 1,
+      title: "Mid-Semester Assessment Guidelines 2026",
+      author: "Dr. Sarah Jenkins (HOD)",
+      date: "Jul 22, 2026",
+      tag: "Academic",
+      pinned: true,
+      content: "All faculty members are requested to upload draft question papers by next Friday for review.",
+    },
+    {
+      id: 2,
+      title: "Departmental Research Grant Applications Open",
+      author: "Research Committee",
+      date: "Jul 20, 2026",
+      tag: "Funding",
+      pinned: false,
+      content: "Submit proposals for Q3 internal funding grants via the document portal.",
+    },
+  ];
+
+  // Sample Consolidated Meetings Data
+  const meetings = [
+    {
+      id: 1,
+      title: "Curriculum Alignment Review",
+      time: "10:00 AM - 11:30 AM",
+      date: "Today",
+      location: "Conference Room B / Zoom",
+      isOnline: true,
+    },
+    {
+      id: 2,
+      title: "HOD & Coordinators Sync",
+      time: "02:00 PM - 03:00 PM",
+      date: "Tomorrow",
+      location: "HOD Office",
+      isOnline: false,
+    },
+  ];
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
-      {/* Welcome Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-800 text-white shadow-xl shadow-indigo-500/10">
-        <div>
-          <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-white/20 backdrop-blur-md">
-            {activeRole} View
-          </span>
-          <h1 className="text-2xl font-black tracking-tight mt-2">
-            Department Overview
-          </h1>
-          <p className="text-xs text-indigo-100 mt-1">
-            Real-time status updates across faculty workloads and pending deadlines.
-          </p>
+    <div className="space-y-8 animate-in fade-in duration-200">
+      
+      {/* Hero Welcome Banner */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white relative overflow-hidden shadow-xl border border-indigo-500/20">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+        
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5" /> Workspace Overview
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              Welcome back, {user?.name || "User"} 👋
+            </h1>
+            <p className="text-xs sm:text-sm text-indigo-200/80">
+              Logged in as <span className="font-bold text-white">{activeRole}</span>. Here is what is happening today in your department.
+            </p>
+          </div>
+
+          <button className="self-start sm:self-auto px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 transition-all shadow-lg shadow-indigo-600/30">
+            <Plus className="w-4 h-4" /> Quick Action
+          </button>
         </div>
       </div>
 
-      {/* Dynamic Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Metric 1: Faculty */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Total Faculty</span>
-            <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
-              <Users className="w-4 h-4" />
-            </div>
+      {/* KPI Stats Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Total Faculty</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1">{faculty.length}</h3>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white">
-            {totalFacultyCount}
+          <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <Users className="w-6 h-6" />
           </div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
-            {activeFacultyCount} Active Members
-          </p>
         </div>
 
-        {/* Metric 2: Pending Tasks */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Pending Tasks</span>
-            <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
-              <Clock className="w-4 h-4" />
-            </div>
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Pending Tasks</p>
+            <h3 className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">{pendingTasks.length}</h3>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white">
-            {pendingTasks.length}
+          <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+            <Clock className="w-6 h-6" />
           </div>
-          <p className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">
-            {highPriorityPending} High Priority
-          </p>
         </div>
 
-        {/* Metric 3: Completed Deliverables */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Completed</span>
-            <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
-              <CheckSquare className="w-4 h-4" />
-            </div>
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Completed Tasks</p>
+            <h3 className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">{completedTasks.length}</h3>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white">
-            {completedTasks.length}
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <CheckCircle2 className="w-6 h-6" />
           </div>
-          <p className="text-[11px] text-slate-400">
-            {Math.round((completedTasks.length / (tasks.length || 1)) * 100)}% Completion Rate
-          </p>
         </div>
 
-        {/* Metric 4: AI Knowledge Index */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">AI Knowledge Docs</span>
-            <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400">
-              <Sparkles className="w-4 h-4" />
-            </div>
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Upcoming Meetings</p>
+            <h3 className="text-2xl font-black text-purple-600 dark:text-purple-400 mt-1">{meetings.length}</h3>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white">
-            142
+          <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+            <Calendar className="w-6 h-6" />
           </div>
-          <p className="text-[11px] text-indigo-500 font-semibold">
-            Indexed & Syncing
-          </p>
         </div>
+
       </div>
 
-      {/* Dynamic Task Preview Section */}
-      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
-        <h2 className="text-base font-bold text-slate-900 dark:text-white">
-          Active Tasks Preview ({pendingTasks.length} remaining)
-        </h2>
-        <div className="divide-y divide-slate-100 dark:divide-slate-800">
-          {pendingTasks.slice(0, 3).map((task) => (
-            <div key={task.id} className="py-3 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={task.status === "Completed"}
-                  onChange={() => toggleTaskStatus(task.id)}
-                  className="w-4 h-4 rounded text-indigo-600 cursor-pointer"
-                />
-                <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
-                  {task.title}
-                </span>
+      {/* Main Content Grid: Consolidated Announcements & Meetings Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Left 2 Columns: Announcements Bulletin */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Megaphone className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                Department Bulletin
+              </h2>
+            </div>
+            <span className="text-xs font-semibold text-slate-400">Latest updates</span>
+          </div>
+
+          <div className="space-y-3">
+            {announcements.map((item) => (
+              <div
+                key={item.id}
+                className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2 relative"
+              >
+                {item.pinned && (
+                  <Pin className="w-3.5 h-3.5 absolute top-5 right-5 text-indigo-500 fill-indigo-500/20" />
+                )}
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/50">
+                    {item.tag}
+                  </span>
+                  <span className="text-[11px] text-slate-400">• {item.date}</span>
+                </div>
+                <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {item.content}
+                </p>
+                <div className="pt-2 text-[11px] font-semibold text-slate-400">
+                  Posted by: <span className="text-slate-700 dark:text-slate-300">{item.author}</span>
+                </div>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400">
-                Due {task.dueDate}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
+        {/* Right 1 Column: Upcoming Meetings Schedule */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                Upcoming Meetings
+              </h2>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {meetings.map((m) => (
+              <div
+                key={m.id}
+                className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                    {m.date}
+                  </span>
+                  {m.isOnline && (
+                    <span className="flex items-center gap-1 text-[10px] font-semibold text-indigo-500">
+                      <Video className="w-3 h-3" /> Online
+                    </span>
+                  )}
+                </div>
+                <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100">
+                  {m.title}
+                </h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" /> {m.time}
+                </p>
+                <p className="text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-2 mt-2">
+                  📍 {m.location}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
+
     </div>
   );
 }

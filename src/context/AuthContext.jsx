@@ -33,7 +33,30 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => setIsAuthenticated(false);
-  const login = () => setIsAuthenticated(true);
+
+  // Dynamic login accepting user parameters
+  const login = (userData) => {
+    if (userData) {
+      const name = userData.name || "User";
+
+      // Auto-generate avatar initials
+      const nameParts = name.trim().split(" ");
+      const avatar = nameParts.length > 1 
+        ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
+        : name.substring(0, 2).toUpperCase();
+
+      setUser({
+        name: name,
+        email: userData.email || `${name.toLowerCase().replace(/\s+/g, ".")}@workhub.ai`,
+        avatar: avatar,
+      });
+
+      if (userData.role) {
+        setActiveRole(userData.role);
+      }
+    }
+    setIsAuthenticated(true);
+  };
 
   // Task actions
   const addTask = (newTask) => setTasks((prev) => [newTask, ...prev]);
@@ -54,6 +77,7 @@ export function AuthProvider({ children }) {
         theme,
         toggleTheme,
         user,
+        setUser,
         logout,
         login,
         faculty,
