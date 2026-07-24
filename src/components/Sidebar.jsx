@@ -5,18 +5,15 @@ import {
   Users,
   CheckSquare,
   Sparkles,
-  Sun,
-  Moon,
   ChevronDown,
   LogOut,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Sidebar() {
-  const { activeRole, setActiveRole, theme, toggleTheme, user, logout } = useAuth();
+  const { activeRole, setActiveRole, user, logout } = useAuth();
   const location = useLocation();
 
-  // Streamlined v1/v2 navigation items
   const navigation = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/" },
     { name: "Faculty", icon: Users, path: "/faculty", roles: ["Head of Department", "Dept. Coordinator"] },
@@ -24,7 +21,6 @@ export default function Sidebar() {
     { name: "AI Knowledge", icon: Sparkles, path: "/ai-knowledge" },
   ];
 
-  // Filter menu items based on the active role
   const filteredNav = navigation.filter(
     (item) => !item.roles || item.roles.includes(activeRole)
   );
@@ -32,7 +28,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 border-r flex flex-col justify-between h-screen sticky top-0 transition-colors duration-200 bg-white border-slate-200 text-slate-700 dark:bg-slate-900/95 dark:border-slate-800 dark:text-slate-200 backdrop-blur-md">
       <div className="p-5">
-        {/* Brand Logo & Header */}
+        {/* Brand Logo */}
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
             W
@@ -47,7 +43,7 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Dynamic Role Switcher Dropdown */}
+        {/* Dynamic Role Switcher */}
         <div className="mb-6 p-3 rounded-xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50">
           <label className="block text-[10px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500 mb-1">
             Active Role
@@ -96,13 +92,13 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer Controls: User Profile + Theme & Logout Actions */}
+      {/* Footer Controls: User + Logout Button */}
       <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold flex items-center justify-center text-xs">
+        <div className="flex items-center gap-3 truncate">
+          <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold flex items-center justify-center text-xs shrink-0">
             {user?.avatar || "U"}
           </div>
-          <div className="truncate max-w-[90px]">
+          <div className="truncate">
             <p className="text-xs font-semibold truncate text-slate-800 dark:text-slate-200">
               {user?.name ? user.name.split(" ")[0] : "User"}
             </p>
@@ -110,31 +106,15 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Controls: Theme Toggle + Logout Button */}
-        <div className="flex items-center gap-1">
-          {/* Light / Dark Mode Toggle */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle Theme"
-            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-all border border-slate-200 dark:border-slate-700/50"
-          >
-            {theme === "dark" ? (
-              <Sun className="w-4 h-4 text-amber-400" />
-            ) : (
-              <Moon className="w-4 h-4 text-indigo-600" />
-            )}
-          </button>
-
-          {/* Logout Action Button */}
-          <button
-            onClick={logout}
-            title="Sign Out"
-            aria-label="Sign Out"
-            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-all border border-slate-200 dark:border-slate-700/50"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
-        </div>
+        {/* Sign Out Button */}
+        <button
+          onClick={logout}
+          title="Sign Out"
+          aria-label="Sign Out"
+          className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-all border border-slate-200 dark:border-slate-700/50"
+        >
+          <LogOut className="w-4 h-4" />
+        </button>
       </div>
     </aside>
   );

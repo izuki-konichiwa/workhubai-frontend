@@ -3,15 +3,12 @@ import React, { createContext, useContext, useState } from "react";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // 🔒 Default to unauthenticated and no user on initial load
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  
   const [activeRole, setActiveRole] = useState("Head of Department");
   const [theme, setTheme] = useState("dark");
-
-  const [user, setUser] = useState({
-    name: "Dr. Sarah Jenkins",
-    email: "s.jenkins@workhub.edu",
-    avatar: "SJ",
-  });
 
   // --- GLOBAL APP STATE ---
   const [faculty, setFaculty] = useState([
@@ -32,7 +29,11 @@ export function AuthProvider({ children }) {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const logout = () => setIsAuthenticated(false);
+  // Clear user data on logout
+  const logout = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+  };
 
   // Dynamic login accepting user parameters
   const login = (userData) => {
@@ -54,7 +55,15 @@ export function AuthProvider({ children }) {
       if (userData.role) {
         setActiveRole(userData.role);
       }
+    } else {
+      // Fallback default user if logging in with empty parameters
+      setUser({
+        name: "Dr. Sarah Jenkins",
+        email: "s.jenkins@workhub.edu",
+        avatar: "SJ",
+      });
     }
+    
     setIsAuthenticated(true);
   };
 
